@@ -1,0 +1,22 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: traefik-routes
+  namespace: kube-system
+spec:
+  repo: https://danya02.github.io/helm-charts
+  chart: traefik-reverse-proxy-routes
+  targetNamespace: default
+  valuesContent: |-
+    entryPoints:
+      - websecure
+
+    tls:
+      enabled: true
+      certResolver: "letsencrypt"
+
+    routes:
+      - name: example
+        host: example.yourdomain.com
+        ip: 10.0.1.100
+        port: 80

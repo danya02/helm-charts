@@ -1,0 +1,25 @@
+entryPoints:
+  - websecure
+
+tls:
+  enabled: true
+  certResolver: ""  # e.g. "letsencrypt"
+  secretName: ""    # e.g. "my-wildcard-tls"
+
+routes:
+  - name: example-ip
+    host: example.example.com
+    ip: 10.0.1.100   # external IP — generates a ClusterIP Service + Endpoints
+    port: 80
+    # Optional per-route overrides:
+    # entryPoints: [web, websecure]
+    # tls:
+    #   enabled: false
+    # middlewares:
+    #   - name: my-middleware
+    #     namespace: default
+
+  - name: example-dns
+    host: other.example.com
+    externalName: myserver.internal.corp  # external hostname — generates an ExternalName Service
+    port: 443

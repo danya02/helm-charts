@@ -1,0 +1,41 @@
+{{- range .Values.routes }}
+{{- if and .ip .externalName }}
+  {{- fail (printf "route '%s': ip and externalName are mutually exclusive" .name) }}
+{{- end }}
+{{- if not (or .ip .externalName) }}
+  {{- fail (printf "route '%s': one of ip or externalName must be set" .name) }}
+{{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "traefik-reverse-proxy-routes.fullname" $ }}-{{ .name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "traefik-reverse-proxy-routes.labels" $ | nindent 4 }}
+spec:
+  ports:
+    - port: {{ .port }}
+      protocol: TCP
+  {{- if .externalName }}
+  type: ExternalName
+  externalName: {{ .externalName }}
+  {{- end }}
+{{- if .ip }}
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: {{ include "traefik-reverse-proxy-routes.fullname" $ }}-{{ .name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    kubernetes.io/service-name: {{ include "traefik-reverse-proxy-routes.fullname" $ }}-{{ .name }}
+addressType: IPv4
+endpoints:
+  - addresses:
+      - {{ .ip }}
+ports:
+  - port: {{ .port }}
+    protocol: TCP
+{{- end }}
+{{- end }}

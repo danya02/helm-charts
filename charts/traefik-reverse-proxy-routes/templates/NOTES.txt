@@ -1,0 +1,9 @@
+Routes created by this release:
+{{- range .Values.routes }}
+  - {{ .host }} → {{ if .ip }}{{ .ip }}{{ else }}{{ .externalName }}{{ end }}:{{ .port }}
+{{- end }}
+
+Verify with:
+  kubectl get ingressroute,endpointslice,svc -n {{ .Release.Namespace }}
+
+Chart repository: https://danya02.github.io/helm-charts

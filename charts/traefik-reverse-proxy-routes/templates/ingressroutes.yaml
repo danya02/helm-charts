@@ -1,0 +1,35 @@
+{{- range .Values.routes }}
+{{- $tls := mergeOverwrite (deepCopy $.Values.tls) (default dict .tls) }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ include "traefik-reverse-proxy-routes.fullname" $ }}-{{ .name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "traefik-reverse-proxy-routes.labels" $ | nindent 4 }}
+spec:
+  entryPoints:
+    {{- range (default $.Values.entryPoints .entryPoints) }}
+    - {{ . }}
+    {{- end }}
+  routes:
+    - match: Host(`{{ .host }}`)
+      kind: Rule
+      services:
+        - name: {{ include "traefik-reverse-proxy-routes.fullname" $ }}-{{ .name }}
+          port: {{ .port }}
+      {{- if .middlewares }}
+      middlewares:
+        {{- toYaml .middlewares | nindent 8 }}
+      {{- end }}
+  {{- if $tls.enabled }}
+  tls:
+    {{- if $tls.certResolver }}
+    certResolver: {{ $tls.certResolver }}
+    {{- end }}
+    {{- if $tls.secretName }}
+    secretName: {{ $tls.secretName }}
+    {{- end }}
+  {{- end }}
+{{- end }}

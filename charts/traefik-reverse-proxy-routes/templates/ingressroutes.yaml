@@ -1,5 +1,11 @@
 {{- range .Values.routes }}
 {{- $tls := mergeOverwrite (deepCopy $.Values.tls) (default dict .tls) }}
+{{- $backend := default dict .backend }}
+{{- $middlewares := default list .middlewares }}
+{{- if $backend.host }}
+{{- $hostMiddleware := dict "name" (printf "%s-%s-host" (include "traefik-reverse-proxy-routes.fullname" $) .name) "namespace" $.Release.Namespace }}
+{{- $middlewares = append $middlewares $hostMiddleware }}
+{{- end }}
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
@@ -19,16 +25,15 @@ spec:
       services:
         - name: {{ include "traefik-reverse-proxy-routes.fullname" $ }}-{{ .name }}
           port: {{ .port }}
-          {{- $backend := default dict .backend }}
           {{- if $backend.scheme }}
           scheme: {{ $backend.scheme }}
           {{- end }}
           {{- if or $backend.insecureSkipVerify $backend.caSecret }}
           serversTransport: {{ include "traefik-reverse-proxy-routes.fullname" $ }}-{{ .name }}
           {{- end }}
-      {{- if .middlewares }}
+      {{- if $middlewares }}
       middlewares:
-        {{- toYaml .middlewares | nindent 8 }}
+        {{- toYaml $middlewares | nindent 8 }}
       {{- end }}
   {{- if $tls.enabled }}
   tls:

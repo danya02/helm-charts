@@ -22,6 +22,7 @@ routes:
     #   scheme: https             # force HTTPS (or h2c) to the backend; default is HTTP
     #   insecureSkipVerify: true  # skip backend TLS certificate verification
     #   caSecret: ""              # Secret name containing ca.crt for backend verification
+    #   host: ""                  # override the Host header sent to the backend
 
   - name: example-dns
     host: other.example.com
@@ -31,3 +32,4 @@ routes:
     #   scheme: https
     #   insecureSkipVerify: false
     #   caSecret: "my-internal-ca"
+    #   host: "myserver.internal.corp"  # send this Host header instead of the public hostname

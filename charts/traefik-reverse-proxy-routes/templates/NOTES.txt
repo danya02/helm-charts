@@ -4,6 +4,6 @@ Routes created by this release:
 {{- end }}
 
 Verify with:
-  kubectl get ingressroute,serverstransport,endpointslice,svc -n {{ .Release.Namespace }}
+  kubectl get ingressroute,serverstransport,middleware,endpointslice,svc -n {{ .Release.Namespace }}
 
 Chart repository: https://danya02.github.io/helm-charts

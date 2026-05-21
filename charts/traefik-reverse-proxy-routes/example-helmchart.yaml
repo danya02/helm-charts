@@ -28,3 +28,4 @@ spec:
         backend:
           scheme: https
           insecureSkipVerify: true  # or use caSecret: "my-ca-secret"
+          host: internal-app.corp   # rewrite Host header so the backend recognises the request

@@ -1,0 +1,18 @@
+apiVersion: v1
+entries:
+  traefik-reverse-proxy-routes:
+  - apiVersion: v2
+    created: "2026-05-21T16:48:13.434387166Z"
+    description: Manage Traefik IngressRoute CRDs to create many basic reverse proxies
+      from a single values file
+    digest: cba9014a257cd740d96a1cfce6399546ad1636c7389424ac7f46ce9ea1f2def1
+    keywords:
+    - traefik
+    - ingress
+    - routing
+    name: traefik-reverse-proxy-routes
+    type: application
+    urls:
+    - https://github.com/danya02/helm-charts/releases/download/traefik-reverse-proxy-routes-0.1.0/traefik-reverse-proxy-routes-0.1.0.tgz
+    version: 0.1.0
+generated: "2026-05-21T16:48:13.434399899Z"

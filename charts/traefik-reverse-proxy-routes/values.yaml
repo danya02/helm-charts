@@ -18,8 +18,16 @@ routes:
     # middlewares:
     #   - name: my-middleware
     #     namespace: default
+    # backend:
+    #   scheme: https             # force HTTPS (or h2c) to the backend; default is HTTP
+    #   insecureSkipVerify: true  # skip backend TLS certificate verification
+    #   caSecret: ""              # Secret name containing ca.crt for backend verification
 
   - name: example-dns
     host: other.example.com
     externalName: myserver.internal.corp  # external hostname — generates an ExternalName Service
     port: 443
+    # backend:
+    #   scheme: https
+    #   insecureSkipVerify: false
+    #   caSecret: "my-internal-ca"

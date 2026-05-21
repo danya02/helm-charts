@@ -19,6 +19,13 @@ spec:
       services:
         - name: {{ include "traefik-reverse-proxy-routes.fullname" $ }}-{{ .name }}
           port: {{ .port }}
+          {{- $backend := default dict .backend }}
+          {{- if $backend.scheme }}
+          scheme: {{ $backend.scheme }}
+          {{- end }}
+          {{- if or $backend.insecureSkipVerify $backend.caSecret }}
+          serversTransport: {{ include "traefik-reverse-proxy-routes.fullname" $ }}-{{ .name }}
+          {{- end }}
       {{- if .middlewares }}
       middlewares:
         {{- toYaml .middlewares | nindent 8 }}

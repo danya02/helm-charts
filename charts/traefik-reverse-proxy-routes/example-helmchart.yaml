@@ -20,3 +20,11 @@ spec:
         host: example.yourdomain.com
         ip: 10.0.1.100
         port: 80
+
+      - name: example-https-backend
+        host: secure.yourdomain.com
+        externalName: internal-app.corp
+        port: 443
+        backend:
+          scheme: https
+          insecureSkipVerify: true  # or use caSecret: "my-ca-secret"

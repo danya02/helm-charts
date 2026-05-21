@@ -1,0 +1,19 @@
+{{- range .Values.routes }}
+{{- $backend := default dict .backend }}
+{{- if or $backend.insecureSkipVerify $backend.caSecret }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: {{ include "traefik-reverse-proxy-routes.fullname" $ }}-{{ .name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "traefik-reverse-proxy-routes.labels" $ | nindent 4 }}
+spec:
+  insecureSkipVerify: {{ $backend.insecureSkipVerify | default false }}
+  {{- if $backend.caSecret }}
+  rootCAsSecrets:
+    - {{ $backend.caSecret }}
+  {{- end }}
+{{- end }}
+{{- end }}

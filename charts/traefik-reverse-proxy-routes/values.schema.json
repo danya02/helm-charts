@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["routes"],
+  "properties": {
+    "nameOverride": {
+      "type": "string",
+      "description": "Override the name of the chart"
+    },
+    "fullnameOverride": {
+      "type": "string",
+      "description": "Override the fully qualified app name"
+    },
+    "routes": {
+      "type": "array",
+      "description": "List of reverse proxy routes to create",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "host", "port"],
+        "oneOf": [
+          {
+            "required": ["ip"],
+            "not": { "required": ["externalName"] }
+          },
+          {
+            "required": ["externalName"],
+            "not": { "required": ["ip"] }
+          }
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Unique name for this route; used in generated Kubernetes resource names"
+          },
+          "host": {
+            "type": "string",
+            "description": "Public hostname matched by the IngressRoute rule (e.g. app.example.com)"
+          },
+          "port": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 65535,
+            "description": "Port on the backend to forward traffic to"
+          },
+          "ip": {
+            "type": "string",
+            "description": "Backend IPv4 address. Mutually exclusive with externalName. Generates a ClusterIP Service and EndpointSlice."
+          },
+          "externalName": {
+            "type": "string",
+            "description": "Backend hostname. Mutually exclusive with ip. Generates an ExternalName Service."
+          },
+          "middlewares": {
+            "type": "array",
+            "description": "Traefik Middleware references to attach to this route",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name", "namespace"],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Name of the Middleware resource"
+                },
+                "namespace": {
+                  "type": "string",
+                  "description": "Namespace of the Middleware resource"
+                }
+              }
+            }
+          },
+          "backend": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Options for connecting to the backend",
+            "properties": {
+              "scheme": {
+                "type": "string",
+                "enum": ["https", "h2c"],
+                "description": "Force a specific scheme when connecting to the backend. Omit for plain HTTP."
+              },
+              "insecureSkipVerify": {
+                "type": "boolean",
+                "description": "Skip TLS certificate verification for the backend. Creates a ServersTransport resource."
+              },
+              "caSecret": {
+                "type": "string",
+                "description": "Name of a Secret containing ca.crt for backend TLS verification. Creates a ServersTransport resource."
+              },
+              "host": {
+                "type": "string",
+                "description": "Override the Host header sent to the backend. Creates a headers Middleware."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

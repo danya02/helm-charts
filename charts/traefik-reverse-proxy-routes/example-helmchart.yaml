@@ -8,13 +8,6 @@ spec:
   chart: traefik-reverse-proxy-routes
   targetNamespace: default
   valuesContent: |-
-    entryPoints:
-      - websecure
-
-    tls:
-      enabled: true
-      certResolver: "letsencrypt"
-
     routes:
       - name: example
         host: example.yourdomain.com

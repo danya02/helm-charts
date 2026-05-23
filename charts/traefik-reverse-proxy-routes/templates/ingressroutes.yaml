@@ -1,5 +1,4 @@
 {{- range .Values.routes }}
-{{- $tls := mergeOverwrite (deepCopy $.Values.tls) (default dict .tls) }}
 {{- $backend := default dict .backend }}
 {{- $middlewares := default list .middlewares }}
 {{- if $backend.host }}
@@ -15,10 +14,6 @@ metadata:
   labels:
     {{- include "traefik-reverse-proxy-routes.labels" $ | nindent 4 }}
 spec:
-  entryPoints:
-    {{- range (default $.Values.entryPoints .entryPoints) }}
-    - {{ . }}
-    {{- end }}
   routes:
     - match: Host(`{{ .host }}`)
       kind: Rule
@@ -35,13 +30,5 @@ spec:
       middlewares:
         {{- toYaml $middlewares | nindent 8 }}
       {{- end }}
-  {{- if $tls.enabled }}
-  tls:
-    {{- if $tls.certResolver }}
-    certResolver: {{ $tls.certResolver }}
-    {{- end }}
-    {{- if $tls.secretName }}
-    secretName: {{ $tls.secretName }}
-    {{- end }}
-  {{- end }}
+  tls: {}
 {{- end }}

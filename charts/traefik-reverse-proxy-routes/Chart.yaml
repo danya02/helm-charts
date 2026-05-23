@@ -2,7 +2,7 @@ apiVersion: v2
 name: traefik-reverse-proxy-routes
 description: Manage Traefik IngressRoute CRDs to create many basic reverse proxies from a single values file
 type: application
-version: 0.3.0
+version: 0.4.0
 keywords:
   - traefik
   - ingress
